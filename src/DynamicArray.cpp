@@ -1,13 +1,12 @@
 #include "DynamicArray.h"
 #include <iostream>
+#include <stdexcept>
 
 DynamicArray::DynamicArray(std::size_t size)
-    : data_(size == 0 ? nullptr : new int[size]{}),
-    size_(size) {}
+    : data_(size == 0 ? nullptr : new int[size]{}), size_(size) {}
 
 DynamicArray::DynamicArray(const DynamicArray& other)
-    : data_(other.size_ == 0 ? nullptr : new int[other.size_]), 
-    size_(other.size_) {
+    : data_(other.size_ == 0 ? nullptr : new int[other.size_]), size_(other.size_) {
     for (std::size_t i = 0; i < size_; ++i) {
         data_[i] = other.data_[i];
     }
@@ -21,20 +20,22 @@ std::size_t DynamicArray::size() const noexcept {
     return size_;
 }
 
-bool DynamicArray::set(std::size_t index, int value) noexcept {
-    if (index >= size_ || value < -100 || value > 100) {
-        return false;
+void DynamicArray::set(std::size_t index, int value) {
+    if (index >= size_) {
+        throw std::out_of_range("DynamicArray::set: index is outside the array");
     }
+    if (value < -100 || value > 100) {
+        throw std::invalid_argument("DynamicArray::set: value must be in [-100, 100]");
+    }
+
     data_[index] = value;
-    return true;
 }
 
-bool DynamicArray::get(std::size_t index, int& outValue) const noexcept {
+int DynamicArray::get(std::size_t index) const {
     if (index >= size_) {
-        return false;
+        throw std::out_of_range("DynamicArray::get: index is outside the array");
     }
-    outValue = data_[index];
-    return true;
+    return data_[index];
 }
 
 void DynamicArray::print() const {
@@ -48,9 +49,9 @@ void DynamicArray::print() const {
     std::cout << "}\n";
 }
 
-bool DynamicArray::append(int value) {
+void DynamicArray::append(int value) {
     if (value < -100 || value > 100) {
-        return false;
+        throw std::invalid_argument("DynamicArray::append: value must be in [-100, 100]");
     }
 
     int* newData = new int[size_ + 1];
@@ -62,7 +63,6 @@ bool DynamicArray::append(int value) {
     delete[] data_;
     data_ = newData;
     ++size_;
-    return true;
 }
 
 void DynamicArray::add(const DynamicArray& other) noexcept {
