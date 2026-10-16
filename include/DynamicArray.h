@@ -15,13 +15,13 @@ public:
 
     std::size_t size() const noexcept;
 
-    bool set(std::size_t index, int value) noexcept;
+    void set(std::size_t index, int value);
 
-    bool get(std::size_t index, int& outValue) const noexcept;
+    int get(std::size_t index) const;
 
     void print() const;
 
-    bool append(int value);
+    void append(int value);
 
     void add(const DynamicArray& other) noexcept;
 
